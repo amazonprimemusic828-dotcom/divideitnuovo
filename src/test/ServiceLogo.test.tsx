@@ -1,5 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+import { Layers3 } from "lucide-react";
 import ServiceLogo from "@/components/ServiceLogo";
 import { getServiceCategory, SERVICE_CATEGORIES, SERVICE_CATEGORY_LABELS, SERVICE_COLORS, STRIPE_FEE_PER_PERSON, type ServiceCategory } from "@/lib/serviceConstants";
 
@@ -38,9 +39,14 @@ describe("ServiceLogo", () => {
   });
 
   it.each([undefined, null, "", "   ", "Servizio sconosciuto", "__proto__", "constructor"])("uses a stable generic symbol for %s", (name) => {
-    const { container } = render(<ServiceLogo name={name} />);
-    expect(screen.getByRole("img", { name: "Servizio digitale" })).toHaveAttribute("data-service-category", "generic");
-    expect(container.querySelector(".lucide-layers-3")).not.toBeNull();
+    const { container } = render(<><ServiceLogo name={name} /><Layers3 data-testid="reference-icon" /></>);
+    const symbol = screen.getByRole("img", { name: "Servizio digitale" });
+    expect(symbol).toHaveAttribute("data-service-category", "generic");
+    // Compare the actual exported icon geometry, not a version-specific CSS alias.
+    const paths = (element: Element) => Array.from(element.querySelectorAll("path"), (path) => path.getAttribute("d"));
+    const expectedPaths = paths(screen.getByTestId("reference-icon"));
+    expect(expectedPaths.length).toBeGreaterThan(0);
+    expect(paths(symbol)).toEqual(expectedPaths);
     expect(container.querySelector("text")).toBeNull();
   });
 
