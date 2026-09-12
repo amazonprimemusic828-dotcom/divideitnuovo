@@ -2593,6 +2593,16 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const action = body.action || "";
 
+    // Keep database-only features available without enabling money movement.
+    // Existing authentication and authorization below remain mandatory.
+    const databaseOnlyActions = new Set([
+      "credentials-set", "credentials-get", "credential-status",
+      "ledger", "wallet-balance", "admin-config-read", "admin-config-write",
+    ]);
+    if (Deno.env.get("STRIPE_ENABLED") !== "true" && !databaseOnlyActions.has(action)) {
+      return json({ code: "STRIPE_DISABLED", error: "Stripe disattivato: pagamenti temporaneamente non disponibili." }, 503);
+    }
+
     // Cron-only action: authenticated with the shared CRON_SECRET header
     if (action === "auto-payout-run" || action === "waitlist-process-all") {
       const cronSecret = Deno.env.get("CRON_SECRET") || "";

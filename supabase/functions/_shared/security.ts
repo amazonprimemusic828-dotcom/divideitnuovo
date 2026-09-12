@@ -6,9 +6,8 @@ import { z } from "npm:zod@3";
 export { z };
 
 // ============= CORS WHITELIST =============
-// Configure extra origins via the ALLOWED_ORIGINS secret (comma-separated).
-// SECURITY (audit punto 10): dev/preview origins are enabled ONLY outside
-// production (ENVIRONMENT secret). Production allows real domains only.
+// Use the confirmed application domain. Local development requires
+// ENVIRONMENT=development; obsolete deployment origins are not accepted.
 const PRODUCTION_ORIGINS = ["https://c-charm-creator.lovable.app"];
 const DEV_ORIGINS = [
   "http://localhost:8080",
