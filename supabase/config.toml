@@ -1,1 +1,15 @@
-project_id = "pcumuxuqdxzvtcorbtuo"
+project_id = "oozofpqpivmrsfeybswd"
+
+[auth]
+site_url = "https://c-charm-creator.lovable.app"
+additional_redirect_urls = ["https://c-charm-creator.lovable.app/**"]
+
+# These endpoints validate their own signature, cron secret or user JWT.
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.stripe-api]
+verify_jwt = false
+
+[functions.hold-release]
+verify_jwt = false
