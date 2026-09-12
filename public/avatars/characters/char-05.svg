@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7e8"/>
+      <stop offset="1" stop-color="#eefcff"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff8a3d"/>
+      <stop offset="1" stop-color="#ff5c9a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#bg)"/>
+  <circle cx="256" cy="226" r="116" fill="#ffd6c2"/>
+  <!-- Hair: long with bangs -->
+  <path d="M152 216c20-82 88-120 104-120s84 38 104 120c-30-16-64-24-104-24s-74 8-104 24z" fill="#2f3b4d"/>
+  <path d="M178 206c18-40 50-64 78-64s60 24 78 64c-22-12-50-18-78-18s-56 6-78 18z" fill="#1f2a3b" opacity="0.95"/>
+  <path d="M168 246c-10 44-10 92 10 136 8 18 22 38 36 50 10 8 20 4 18-8-2-10-10-26-14-38-14-38-14-74-4-124 2-10-8-16-16-10-10 8-20 14-30 18z" fill="#2f3b4d" opacity="0.95"/>
+  <path d="M344 246c10 44 10 92-10 136-8 18-22 38-36 50-10 8-20 4-18-8 2-10 10-26 14-38 14-38 14-74 4-124-2-10 8-16 16-10 10 8 20 14 30 18z" fill="#2f3b4d" opacity="0.95"/>
+  <circle cx="214" cy="234" r="12" fill="#1b1f2a"/>
+  <circle cx="298" cy="234" r="12" fill="#1b1f2a"/>
+  <path d="M220 284c12 12 24 16 36 16s24-4 36-16" fill="none" stroke="#7a3b2e" stroke-width="10" stroke-linecap="round"/>
+  <!-- Hair accessory (clip) -->
+  <rect x="312" y="188" width="42" height="18" rx="9" fill="#ffffff" opacity="0.85"/>
+  <path d="M160 338c30-16 62-24 96-24s66 8 96 24c10 5 14 17 10 27-6 14-15 30-28 44-23 25-56 41-78 41s-55-16-78-41c-13-14-22-30-28-44-4-10 0-22 10-27z" fill="url(#shirt)"/>
+</svg>

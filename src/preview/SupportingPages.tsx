@@ -1,0 +1,32 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ArrowUpRight, Check, Copy, Gift, HelpCircle, Mail, MessageSquare, Search, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/input-group";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { MemberAvatars } from "@/components/dashboard/SubscriptionTile";
+
+const faq = [
+  { title: "Come posso trovare un gruppo?", body: "Apri Esplora gruppi, cerca il tuo servizio preferito e filtra per categoria o disponibilità. Seleziona un gruppo per vedere quota, membri e regole di condivisione." },
+  { title: "Dove vedo i miei pagamenti?", body: "Il Portafoglio raccoglie saldo e movimenti. Puoi cercare una transazione, filtrare entrate e uscite e scaricare un estratto CSV dei dati mostrati." },
+  { title: "Come cambio l’avatar?", body: "Apri Impostazioni, poi Cambia avatar. Scegli uno dei sei personaggi della collezione Studio e conferma con Usa questo avatar, oppure carica una foto dal tuo dispositivo." },
+  { title: "Le azioni nell’anteprima sono reali?", body: "No. Questa anteprima è completamente separata dal backend. Non viene caricato alcun account, non vengono eseguiti pagamenti e le modifiche sono temporanee. Al ricaricamento torneranno i dati dimostrativi iniziali." },
+  { title: "Posso condividere con chiunque?", body: "Dipende dalle condizioni del servizio. Alcuni piani prevedono vincoli di nucleo familiare o residenza: verifica sempre i requisiti prima di creare o unirti a un gruppo." },
+];
+export function SupportPreview() {
+  const [query, setQuery] = useState("");
+  const filtered = faq.filter((item) => `${item.title} ${item.body}`.toLowerCase().includes(query.toLowerCase()));
+  return <div className="studio-page"><PageHeader title="Una mano, quando serve." description="Le risposte semplici alle tue domande. E uno spazio per ritrovare la tranquillità." /><div className="support-hero"><span className="note-icon"><HelpCircle className="size-6" /></span><h2 className="font-display text-3xl font-bold tracking-tight">Come possiamo aiutarti?</h2><div className="mx-auto w-full max-w-lg pt-6"><InputGroup><InputGroupInput aria-label="Cerca una risposta" placeholder="Cerca una risposta..." value={query} onChange={(event) => setQuery(event.target.value)} /><InputGroupAddon><Search /></InputGroupAddon></InputGroup></div></div><div className="support-layout"><Card><CardHeader><CardTitle>Le domande più frequenti.</CardTitle></CardHeader><CardContent><Accordion type="single" collapsible>{filtered.map((item, index) => <AccordionItem value={String(index)} key={item.title}><AccordionTrigger className="text-left text-base">{item.title}</AccordionTrigger><AccordionContent className="text-sm leading-relaxed text-muted-foreground">{item.body}</AccordionContent></AccordionItem>)}</Accordion>{!filtered.length && <p className="py-8 text-sm text-muted-foreground">Nessuna risposta trovata. Prova un’altra parola.</p>}</CardContent></Card><Card><CardHeader><span className="note-icon"><MessageSquare className="size-5" /></span><CardTitle>Preferisci parlarne?</CardTitle><CardDescription>Nell’app operativa il centro assistenza ti mette in contatto con il team.</CardDescription></CardHeader><CardContent><Button variant="outline" className="w-full" onClick={() => toast.info("In questa anteprima non vengono inviati ticket o messaggi al team.")}><Mail data-icon="inline-start" />Contatta il supporto</Button><p className="pt-5 text-sm leading-relaxed text-muted-foreground">Nell’anteprima puoi esplorare il design, senza creare richieste reali.</p></CardContent></Card></div></div>;
+}
+export function ReferralPreview() {
+  const [copied, setCopied] = useState(false);
+  const url = `${window.location.origin}/Auth?ref=ANTEPRIMA`;
+  const copy = async () => { try { await navigator.clipboard.writeText(url); setCopied(true); toast.success("Link dimostrativo copiato."); } catch { toast.error("Copia il link manualmente dal campo."); } };
+  return <div className="studio-page"><PageHeader title="Le cose belle meritano compagnia." description="Porta i tuoi amici nel tuo mondo di passioni condivise." /><div className="referral-layout"><div><span className="referral-gift"><Gift className="size-10" /></span><h2 className="font-display text-4xl font-bold leading-tight tracking-tight">Il prossimo bel gruppo?<br />Potrebbe essere il vostro.</h2><p className="max-w-md pt-5 text-base leading-relaxed text-muted-foreground">Un film da commentare, una playlist da scoprire, le spese da dividere. Tutto è un po’ più bello insieme.</p><div className="pt-8"><MemberAvatars names={["sofia", "andrea", "giulia", "marco"]} /></div></div><Card><CardHeader><CardTitle>Un invito, tante possibilità.</CardTitle><CardDescription>Copia il link dimostrativo e scopri come apparirà la condivisione.</CardDescription></CardHeader><CardContent><Field><FieldLabel htmlFor="referral-link">Il tuo link di esempio</FieldLabel><Input id="referral-link" value={url} readOnly onFocus={(event) => event.target.select()} /><Button className="w-full" onClick={copy}>{copied ? <Check data-icon="inline-start" /> : <Copy data-icon="inline-start" />}{copied ? "Link copiato" : "Copia il link"}</Button></Field><p className="pt-5 text-sm leading-relaxed text-muted-foreground">Questo link non assegna premi e non registra referral reali. È solo un’anteprima dell’interfaccia.</p></CardContent></Card></div></div>;
+}
+export function UnavailablePreview({ title = "Questo spazio resta protetto." }: { title?: string }) { return <div className="studio-page"><PageHeader title={title} description="L’anteprima del frontend non accede ai dati o alle funzioni amministrative reali." /><Card><CardHeader><ShieldCheck className="size-9 text-primary" /><CardTitle>Esplora il nuovo design.</CardTitle><CardDescription>Dashboard, gruppi, messaggi, notifiche, portafoglio e impostazioni sono disponibili senza login.</CardDescription></CardHeader><CardContent><Button asChild><Link to="/Dashboard">Vai al tuo spazio<ArrowRight data-icon="inline-end" /></Link></Button></CardContent></Card></div>; }
