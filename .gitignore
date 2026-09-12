@@ -29,4 +29,7 @@ bun.lock
 .env
 .env.*
 !.env.example
+# Public browser configuration only.
+!.env.production
+supabase/.temp/
 .vercel

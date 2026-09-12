@@ -6,46 +6,23 @@ import { z } from "npm:zod@3";
 export { z };
 
 // ============= CORS WHITELIST =============
-// Configure extra origins via the ALLOWED_ORIGINS secret (comma-separated).
-// SECURITY (audit punto 10): dev/preview origins are enabled ONLY outside
-// production (ENVIRONMENT secret). Production allows real domains only.
-const PRODUCTION_ORIGINS = [
-  "https://divideit.app",
-  "https://www.divideit.app",
-  "https://divide-it-magic.lovable.app",
-  "https://huggy-coder-tool.lovable.app",
-  "https://id-preview--b40805d0-ec50-43b0-b2a1-ad16afc05cd6.lovable.app",
-  "https://id-preview--869ba7a9-59e1-43ca-b7dd-aedfaa7c3116.lovable.app",
-  "https://secure-website-three.vercel.app",
-];
-
-// Vercel deployment URLs for THIS project only (production + preview deploys).
-// Strict pattern: secure-website[-anything]-rogally1232-8166s-projects.vercel.app
-const VERCEL_PROJECT_ORIGIN_RE =
-  /^https:\/\/secure-website(-[a-z0-9]+)?(-rogally1232-8166s-projects)?\.vercel\.app$/;
-
+// Use the confirmed application domain. Local development requires
+// ENVIRONMENT=development; obsolete deployment origins are not accepted.
+const PRODUCTION_ORIGINS = ["https://c-charm-creator.lovable.app"];
 const DEV_ORIGINS = [
-  "https://warm-waves-say.lovable.app",
   "http://localhost:8080",
   "http://localhost:5173",
   "http://localhost:3000",
 ];
 
 function getAllowedOrigins(): string[] {
-  const isProduction = (Deno.env.get("ENVIRONMENT") || "").toLowerCase() === "production";
-  const extra = (Deno.env.get("ALLOWED_ORIGINS") || "")
-    .split(",")
-    .map((o) => o.trim())
-    .filter(Boolean);
-  const base = isProduction ? PRODUCTION_ORIGINS : [...PRODUCTION_ORIGINS, ...DEV_ORIGINS];
-  return [...new Set([...base, ...extra])];
+  // Production is the default; local origins require an explicit opt-in.
+  const isDevelopment = Deno.env.get("ENVIRONMENT") === "development";
+  return isDevelopment ? [...PRODUCTION_ORIGINS, ...DEV_ORIGINS] : PRODUCTION_ORIGINS;
 }
 
 function isOriginAllowed(origin: string): boolean {
-  if (!origin) return false;
-  if (getAllowedOrigins().includes(origin)) return true;
-  // Project-scoped Vercel deployment URLs (production and preview)
-  return VERCEL_PROJECT_ORIGIN_RE.test(origin);
+  return getAllowedOrigins().includes(origin);
 }
 
 /**

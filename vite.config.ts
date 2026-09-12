@@ -25,7 +25,6 @@ export default defineConfig(({ mode }) => {
   plugins: [react()],
   resolve: {
     alias: {
-      "@/integrations/supabase/client": path.resolve(__dirname, "./src/integrations/supabase/typed-client.ts"),
       "@": path.resolve(__dirname, "./src"),
     },
   },

@@ -124,6 +124,9 @@ function json(data: any, status = 200) {
 }
 
 function getStripe() {
+  if (Deno.env.get("STRIPE_ENABLED") !== "true") {
+    throw new Error("Stripe disattivato: pagamenti temporaneamente non disponibili.");
+  }
   return new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
     apiVersion: "2024-12-18.acacia" as any,
   });
@@ -170,13 +173,11 @@ async function logAudit(supabase: any, params: any) {
   });
 }
 
-function siteBaseUrl(req: Request, fallback?: string): string {
-  const origin = req.headers.get("origin");
-  if (origin) return origin;
-  return fallback || "https://divideit.app";
+function siteBaseUrl(_req: Request, _fallback?: string): string {
+  return APP_URL;
 }
 
-const PLATFORM_WEBSITE_URL = "https://warm-waves-say.lovable.app";
+const PLATFORM_WEBSITE_URL = APP_URL;
 function cleanOwnerName(ownerName?: string | null, ownerEmail?: string | null) {
   const fallback = ownerEmail?.split("@")[0]?.replace(/[._-]+/g, " ") || "Owner DivideIt";
   const value = (ownerName || fallback).trim().replace(/\s+/g, " ");
@@ -2591,6 +2592,16 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => ({}));
     const action = body.action || "";
+
+    // Keep database-only features available without enabling money movement.
+    // Existing authentication and authorization below remain mandatory.
+    const databaseOnlyActions = new Set([
+      "credentials-set", "credentials-get", "credential-status",
+      "ledger", "wallet-balance", "admin-config-read", "admin-config-write",
+    ]);
+    if (Deno.env.get("STRIPE_ENABLED") !== "true" && !databaseOnlyActions.has(action)) {
+      return json({ code: "STRIPE_DISABLED", error: "Stripe disattivato: pagamenti temporaneamente non disponibili." }, 503);
+    }
 
     // Cron-only action: authenticated with the shared CRON_SECRET header
     if (action === "auto-payout-run" || action === "waitlist-process-all") {
