@@ -23,6 +23,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/AuthContext";
 import { signInWithEmail, signInWithMagicLink } from "@/lib/auth";
+import { APP_URL } from "@/lib/appConfig";
 import { supabase } from "@/integrations/supabase/client";
 import { capturePendingReferral, getReferralLinkInfo, prepareReferralClaim, type ReferralLinkInfo } from "@/lib/referral";
 import AuthAside from "@/components/auth/AuthAside";
@@ -203,7 +204,7 @@ export default function Auth() {
         options: {
           shouldCreateUser: true,
           data: { full_name: regFullName.trim() },
-          emailRedirectTo: "https://c-charm-creator.lovable.app/Dashboard",
+          emailRedirectTo: `${APP_URL}/Dashboard`,
         },
       });
       if (error) {
@@ -283,7 +284,7 @@ export default function Auth() {
         options: {
           shouldCreateUser: true,
           data: { full_name: regFullName.trim() },
-          emailRedirectTo: "https://c-charm-creator.lovable.app/Dashboard",
+          emailRedirectTo: `${APP_URL}/Dashboard`,
         },
       });
       if (error) {

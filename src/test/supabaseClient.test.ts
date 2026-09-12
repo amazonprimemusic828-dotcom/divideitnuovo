@@ -14,7 +14,7 @@ describe('shared Supabase client', () => {
     expect(legacyClient).toBe(supabase);
     expect(dataClient).toBe(supabase);
     expect(createClient).toHaveBeenCalledTimes(1);
-    expect(SUPABASE_URL).toBe('https://oozofpqpivmrsfeybswd.supabase.co');
+    expect(SUPABASE_URL).toBe('https://gsdkunlnjirimxcoqwxd.supabase.co');
     expect(SUPABASE_ANON_KEY).toBeTruthy();
     expect(createClient).toHaveBeenCalledWith(SUPABASE_URL, SUPABASE_ANON_KEY, expect.objectContaining({
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },

@@ -5,8 +5,9 @@ const anon = (ref = SUPABASE_PROJECT_REF, role = 'anon') =>
   `test.${btoa(JSON.stringify({ ref, role }))}.test`;
 
 describe('production Supabase configuration', () => {
-  it('uses the original project and the confirmed application domain', () => {
-    expect(APP_URL).toBe('https://c-charm-creator.lovable.app');
+  it('uses the requested project and the confirmed application domain', () => {
+    expect(APP_URL).toBe('https://divideitnuovo.vercel.app');
+    expect(SUPABASE_PROJECT_REF).toBe('gsdkunlnjirimxcoqwxd');
     expect(resolveSupabaseConfig({ VITE_SUPABASE_ANON_KEY: anon() })).toEqual({
       url: ORIGINAL_SUPABASE_URL, key: anon(),
     });
