@@ -18,17 +18,25 @@ default:
     paths:
       - .npm/
 
-frontend:
+# Unit tests use isolated fixtures, never production credentials.
+unit-tests:
   stage: verify
   script:
     - npm test
+
+# Set the target project's public VITE_SUPABASE_ANON_KEY (or
+# VITE_SUPABASE_PUBLISHABLE_KEY) in CI/CD variables and in Vercel.
+# Keep the public key available to MR checks; private tokens are protected.
+frontend:
+  stage: verify
+  script:
     - npm run build
   artifacts:
     paths:
       - dist/
     expire_in: 7 days
 
-# Read-only checks also run in merge requests, without any private credential.
+# Read-only checks reject mismatched keys and verify Google is enabled.
 supabase-connection:
   stage: verify
   before_script: []
@@ -36,8 +44,10 @@ supabase-connection:
   script:
     - node --env-file=.env.production scripts/test-supabase-connection.mjs
 
-# Configure a rotated SUPABASE_ACCESS_TOKEN as a masked, protected CI/CD variable.
-# Deploy only after merge; no database push/reset or migrations are run.
+# Configure a rotated SUPABASE_ACCESS_TOKEN as a masked, hidden, protected
+# CI/CD variable and protect the default branch. Never store it in the repo.
+# No database push/reset or migrations are run. Hosted Auth URL/provider
+# settings and service-specific secrets must be configured in Supabase.
 deploy-functions:
   stage: deploy
   before_script: []
@@ -45,17 +55,18 @@ deploy-functions:
   resource_group: supabase-production
   environment:
     name: production
-    url: https://oozofpqpivmrsfeybswd.supabase.co
+    url: https://gsdkunlnjirimxcoqwxd.supabase.co
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
   script:
     - ': "${SUPABASE_ACCESS_TOKEN:?Configure a rotated SUPABASE_ACCESS_TOKEN in GitLab CI/CD settings}"'
-    - npx --yes supabase@2 secrets set STRIPE_ENABLED=false ENVIRONMENT=production --project-ref oozofpqpivmrsfeybswd
-    # Deploy all discovered entrypoints, including the disabled Stripe handlers.
+    # Do not overwrite payment-provider flags or existing service secrets.
+    - npx --yes supabase@2 secrets set ENVIRONMENT=production --project-ref gsdkunlnjirimxcoqwxd
+    # Discover all eight current entrypoints; include new functions automatically.
     - |
       set -eu
       for entrypoint in supabase/functions/*/index.ts; do
         test -f "$entrypoint"
         function_name=$(basename "$(dirname "$entrypoint")")
-        npx --yes supabase@2 functions deploy "$function_name" --project-ref oozofpqpivmrsfeybswd --use-api
+        npx --yes supabase@2 functions deploy "$function_name" --project-ref gsdkunlnjirimxcoqwxd --use-api
       done

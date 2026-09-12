@@ -8,7 +8,7 @@ export { z };
 // ============= CORS WHITELIST =============
 // Use the confirmed application domain. Local development requires
 // ENVIRONMENT=development; obsolete deployment origins are not accepted.
-const PRODUCTION_ORIGINS = ["https://c-charm-creator.lovable.app"];
+const PRODUCTION_ORIGINS = ["https://divideitnuovo.vercel.app"];
 const DEV_ORIGINS = [
   "http://localhost:8080",
   "http://localhost:5173",
