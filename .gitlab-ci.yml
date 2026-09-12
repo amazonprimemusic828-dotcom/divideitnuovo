@@ -28,10 +28,11 @@ frontend:
       - dist/
     expire_in: 7 days
 
+# Read-only checks also run in merge requests, without any private credential.
 supabase-connection:
   stage: verify
-  rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  before_script: []
+  cache: []
   script:
     - node --env-file=.env.production scripts/test-supabase-connection.mjs
 
