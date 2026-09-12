@@ -1,0 +1,60 @@
+stages:
+  - verify
+  - deploy
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+default:
+  image: node:22-bookworm-slim
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+
+frontend:
+  stage: verify
+  script:
+    - npm test
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 7 days
+
+supabase-connection:
+  stage: verify
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - node --env-file=.env.production scripts/test-supabase-connection.mjs
+
+# Configure a rotated SUPABASE_ACCESS_TOKEN as a masked, protected CI/CD variable.
+# Deploy only after merge; no database push/reset or migrations are run.
+deploy-functions:
+  stage: deploy
+  before_script: []
+  cache: []
+  resource_group: supabase-production
+  environment:
+    name: production
+    url: https://oozofpqpivmrsfeybswd.supabase.co
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - ': "${SUPABASE_ACCESS_TOKEN:?Configure a rotated SUPABASE_ACCESS_TOKEN in GitLab CI/CD settings}"'
+    - npx --yes supabase@2 secrets set STRIPE_ENABLED=false ENVIRONMENT=production --project-ref oozofpqpivmrsfeybswd
+    # Deploy all discovered entrypoints, including the disabled Stripe handlers.
+    - |
+      set -eu
+      for entrypoint in supabase/functions/*/index.ts; do
+        test -f "$entrypoint"
+        function_name=$(basename "$(dirname "$entrypoint")")
+        npx --yes supabase@2 functions deploy "$function_name" --project-ref oozofpqpivmrsfeybswd --use-api
+      done

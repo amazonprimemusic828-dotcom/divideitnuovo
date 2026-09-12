@@ -42,6 +42,14 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  if (Deno.env.get("STRIPE_ENABLED") !== "true") {
+    // Do not acknowledge unprocessed events: Stripe may retry when re-enabled.
+    return new Response(JSON.stringify({ code: "STRIPE_DISABLED", error: "Stripe disattivato" }), {
+      status: 503,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const signature = req.headers.get("stripe-signature");
   if (!signature) {
     return new Response(JSON.stringify({ error: "Missing stripe-signature" }), {

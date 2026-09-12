@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import { loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -7,6 +8,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    env: loadEnv("production", process.cwd(), "VITE_"),
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
   },
