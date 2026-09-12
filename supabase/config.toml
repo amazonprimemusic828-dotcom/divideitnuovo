@@ -1,8 +1,10 @@
-project_id = "oozofpqpivmrsfeybswd"
+project_id = "gsdkunlnjirimxcoqwxd"
 
+# Mirror these URL settings in the hosted project's Authentication settings.
+# Deploying Edge Functions does not apply hosted Auth configuration.
 [auth]
-site_url = "https://c-charm-creator.lovable.app"
-additional_redirect_urls = ["https://c-charm-creator.lovable.app/**"]
+site_url = "https://divideitnuovo.vercel.app"
+additional_redirect_urls = ["https://divideitnuovo.vercel.app/**"]
 
 # These endpoints validate their own signature, cron secret or user JWT.
 [functions.stripe-webhook]

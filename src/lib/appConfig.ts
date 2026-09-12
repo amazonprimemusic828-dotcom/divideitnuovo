@@ -1,5 +1,5 @@
-export const APP_URL = 'https://c-charm-creator.lovable.app';
-export const SUPABASE_PROJECT_REF = 'oozofpqpivmrsfeybswd';
+export const APP_URL = 'https://divideitnuovo.vercel.app';
+export const SUPABASE_PROJECT_REF = 'gsdkunlnjirimxcoqwxd';
 export const ORIGINAL_SUPABASE_URL = `https://${SUPABASE_PROJECT_REF}.supabase.co`;
 
 export function resolveSupabaseConfig(env: Record<string, string | undefined>) {
