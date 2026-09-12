@@ -31,7 +31,8 @@ for (const path of ['/auth/v1/settings', '/rest/v1/groups?select=id&limit=1']) {
     }
   } catch (error) {
     failed = true;
-    console.error(`FAIL ${path}: ${error.message}`);
+    const networkCode = error.cause?.code;
+    console.error(`FAIL ${path}: ${error.message}${networkCode ? ` (${networkCode})` : ''}`);
   }
 }
 console.log(failed ? 'Connectivity checks failed.' : 'Connectivity checks passed; verify authenticated flows separately.');
