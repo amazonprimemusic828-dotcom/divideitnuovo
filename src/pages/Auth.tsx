@@ -203,7 +203,7 @@ export default function Auth() {
         options: {
           shouldCreateUser: true,
           data: { full_name: regFullName.trim() },
-          emailRedirectTo: `${window.location.origin}/Dashboard`,
+          emailRedirectTo: "https://c-charm-creator.lovable.app/Dashboard",
         },
       });
       if (error) {
@@ -283,7 +283,7 @@ export default function Auth() {
         options: {
           shouldCreateUser: true,
           data: { full_name: regFullName.trim() },
-          emailRedirectTo: `${window.location.origin}/Dashboard`,
+          emailRedirectTo: "https://c-charm-creator.lovable.app/Dashboard",
         },
       });
       if (error) {

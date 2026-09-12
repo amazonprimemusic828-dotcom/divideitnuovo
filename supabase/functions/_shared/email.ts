@@ -29,7 +29,7 @@ const PREF_BY_KIND: Record<EmailKind, string> = {
 };
 
 
-export const APP_URL = Deno.env.get("APP_URL") || "https://divide-it-magic.lovable.app";
+export const APP_URL = "https://c-charm-creator.lovable.app";
 
 function shell(title: string, bodyHtml: string, ctaLabel?: string, ctaUrl?: string): string {
   return `<!doctype html><html><body style="margin:0;padding:0;background:#f5f6fa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
