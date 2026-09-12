@@ -24,9 +24,9 @@ unit-tests:
   script:
     - npm test
 
-# Set the target project's public VITE_SUPABASE_ANON_KEY (or
-# VITE_SUPABASE_PUBLISHABLE_KEY) in CI/CD variables and in Vercel.
-# Keep the public key available to MR checks; private tokens are protected.
+# The target project's public publishable key is in .env.production.
+# Remove stale Vercel/CI overrides, especially VITE_SUPABASE_ANON_KEY.
+# Private deployment tokens remain protected CI/CD variables, never VITE_ vars.
 frontend:
   stage: verify
   script:
